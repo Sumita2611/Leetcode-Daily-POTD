@@ -1,0 +1,67 @@
+BRUTEFORCE_TLE
+// class Solution {
+//     public long maxPoints(int[][] points) {
+//         int m = points.length,n = points[0].length;
+//         long[] prev = new long[n];
+//         //initialize the 1st row
+//         for(int col = 0;col < n;col++){
+//             prev[col] = points[0][col];
+//         }
+//         //interate over each row starting from 2nd
+//         for(int i = 1;i < m;i++){
+//             long[] curr = new long[n];
+//             Arrays.fill(curr,Long.MIN_VALUE);
+
+//             for(int j = 0;j < n;j++){
+//                 for(int k = 0;k < n;k++){
+//                     curr[j] = Math.max(curr[j],prev[k] + points[i][j] - Math.abs(k-j));
+//                 }
+//             }
+//             prev = curr;
+//         }
+//         long max = Long.MIN_VALUE;
+//         for(long val : prev){
+//             max = Math.max(max,val);
+//         }
+//         return max;
+//     }
+// }
+
+
+BETTER APPROACH
+class Solution {
+    public long maxPoints(int[][] points) {
+        int n = points.length,m = points[0].length;
+        long[] prev = new long[m];
+        for(int col = 0;col < m;col++){
+            prev[col] = points[0][col];
+        }    
+
+        for(int i = 1;i < n;i++){
+            long[] curr = new long[m];
+            long[] left = new long[m];
+            long[] right = new long[m];
+
+            left[0] = prev[0];
+            for(int j = 1;j < m;j++){
+                left[j] = Math.max(prev[j],left[j-1]-1);
+            }
+
+            right[m-1] = prev[m-1];
+            for(int j = m-2;j >= 0;j--){
+                right[j] = Math.max(prev[j],right[j+1]-1);
+            }
+
+            //calculate points
+            for(int j = 0;j < m;j++){
+                curr[j] = points[i][j] + Math.max(left[j],right[j]);
+            }
+            prev = curr;
+        }     
+        long max = Long.MIN_VALUE;
+        for(long val : prev){
+            max = Math.max(max,val);
+        }
+        return max;
+    }
+}
